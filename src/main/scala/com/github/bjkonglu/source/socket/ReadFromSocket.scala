@@ -1,4 +1,4 @@
-package com.github.bjkonglu
+package com.github.bjkonglu.source.socket
 
 import com.typesafe.scalalogging.Logger
 import org.apache.spark.sql.SparkSession
@@ -8,14 +8,14 @@ import org.apache.spark.sql.streaming.Trigger
   * Structured Streaming DEMO
   *
   */
-object App {
+object ReadFromSocket {
 
   val logger = Logger(classOf[App])
 
   def main(args: Array[String]): Unit = {
 
     val sparkSession = SparkSession.builder()
-      .appName("App")
+      .appName("ReadFromSocket")
       .master("local[*]")
       .getOrCreate()
 

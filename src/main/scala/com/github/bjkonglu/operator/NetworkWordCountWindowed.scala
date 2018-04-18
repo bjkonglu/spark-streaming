@@ -1,15 +1,15 @@
-package com.github.bjkonglu.source
+package com.github.bjkonglu.operator
 
 import java.sql.Timestamp
 
-import org.apache.spark.sql.{Column, SparkSession}
+import org.apache.spark.sql.SparkSession
 import org.apache.spark.sql.functions._
 
-object StructuredNetworkWordCountWindowed {
+object NetworkWordCountWindowed {
 
   def main(args: Array[String]) {
     if (args.length < 3) {
-      System.err.println("Usage: StructuredNetworkWordCountWindowed <hostname> " +
+      System.err.println("Usage: NetworkWordCountWindowed <hostname> " +
         "<port> <window duration in seconds> [<slide duration in seconds>]")
       System.exit(-1)
     }
@@ -26,7 +26,7 @@ object StructuredNetworkWordCountWindowed {
 
     val sparkSession = SparkSession.builder()
       .master("local[*]")
-      .appName("StructuredNetworkWordCountWindowed")
+      .appName("NetworkWordCountWindowed")
       .getOrCreate()
 
     import sparkSession.implicits._
@@ -39,13 +39,13 @@ object StructuredNetworkWordCountWindowed {
       .load()
 
     val words = line.as[(String, Timestamp)].flatMap(line =>
-    line._1.split(" ").map(word => (word, line._2)))
+      line._1.split(" ").map(word => (word, line._2)))
       .toDF("word", "timestamp")
 
     //FIXME 窗口机制
-    val windowedCounts = words.groupBy(
-      window($"timestamp", windowDuration, slideDuration), $"word"
-    ).count().orderBy("word")
+    val windowedCounts = words
+      .groupBy(window($"timestamp", windowDuration, slideDuration), $"word")
+      .count().orderBy("word")
 
     val query = windowedCounts.writeStream
       .outputMode("complete")
