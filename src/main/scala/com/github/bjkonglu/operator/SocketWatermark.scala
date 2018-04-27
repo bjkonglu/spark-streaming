@@ -46,7 +46,9 @@ object SocketWatermark {
       /**
         * watermark可以处理延时数据
         * watermark = [max even time seen by the engine] - [late threshold]
-        * 如果事件时间大于watermark，则事件可以被更新
+        * 结论：
+        * 1. 延时数据更新的结束条件是：watermark > windowStartTime
+        * 2. 如果watermark > windowStartTime， 则废弃该窗口之前的窗口
         * */
       .withWatermark("timestamp", "2 seconds")
       .groupBy(window($"timestamp", windowDuration, slideDuration), $"word")

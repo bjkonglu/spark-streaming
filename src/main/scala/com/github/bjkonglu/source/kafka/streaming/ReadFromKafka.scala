@@ -13,9 +13,9 @@ object ReadFromKafka {
 
     val df = sparkSession.readStream
       .format("kafka")
-      .option("kafka.bootstrap.servers", "192.168.144.110:9888,192.168.144.111:9888,192.168.144.112:9888")
-      .option("subscribe", "streaming-2018-04-18")
-      .option("startingOffsets", "earliest")
+      .option("kafka.bootstrap.servers", "bjstream2.dg.163.org:9092,bjstream3.dg.163.org:9092,bjstream4.dg.163.org:9092")
+      .option("subscribe", "datastream.datacenter_exp_etl")
+//      .option("startingOffsets", "earliest")
       .load()
 
     df.selectExpr("CAST(value as STRING)", "topic")
